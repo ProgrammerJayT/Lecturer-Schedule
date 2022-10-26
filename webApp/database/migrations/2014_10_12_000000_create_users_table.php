@@ -13,6 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
+        //Disable default tables
+        
         // Schema::create('users', function (Blueprint $table) {
         //     $table->id();
         //     $table->string('name');

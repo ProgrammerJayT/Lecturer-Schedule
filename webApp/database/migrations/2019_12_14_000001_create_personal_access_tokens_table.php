@@ -13,6 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
+
+        //Disable default tables
+
         // Schema::create('personal_access_tokens', function (Blueprint $table) {
         //     $table->id();
         //     $table->morphs('tokenable');
