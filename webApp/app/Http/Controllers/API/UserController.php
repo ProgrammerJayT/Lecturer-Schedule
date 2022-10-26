@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Lecturer;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -16,24 +18,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        //Show all users
+        //Display all students and lecturers
         $students = Student::all();
         $lecturers = Lecturer::all();
 
-        //Get number of users in each table. If there are no users, return 0
-        $studentsCount = $students->count() ? $students->count() : 0;
-        $lecturersCount = $lecturers->count() ? $lecturers->count() : 0;
-
-        //Set return data
-        $data = [
+        //Return the students and lecturers
+        return response()->json([
             'students' => $students,
-            'lecturers' => $lecturers,
-            'studentsCount' => $studentsCount,
-            'lecturersCount' => $lecturersCount
-        ];
-
-        //Return data
-        return response()->json($data);
+            'lecturers' => $lecturers
+        ]);
     }
 
     /**
@@ -55,6 +48,45 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'surname' => 'required|string',
+            'email' => 'required|email|unique:students|unique:lecturers|unique:admins',
+            'password' => 'required|min:8',
+            'role' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'statusCode' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+
+            //Check role and create user
+            switch ($request->role) {
+                case 'student':
+                    $createUserModel = new Student();
+                    break;
+                case 'lecturer':
+                    $createUserModel = new Lecturer();
+                    break;
+                case 'admin':
+                    $createUserModel = new Admin();
+                    break;
+                default:
+                    $createUserModel = null;
+                    break;
+            }
+
+            //Check if model is set
+            if ($createUserModel) {
+
+                $createUserModel->name = $request->name;
+                $createUserModel->surname = $request->surname;
+                $createUserModel->email = $request->email;
+            }
+        }
     }
 
     /**
