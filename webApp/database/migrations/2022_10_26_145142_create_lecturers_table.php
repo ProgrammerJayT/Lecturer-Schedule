@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('lecturers', function (Blueprint $table) {
             $table->id();
             $table->integer('credentials_id');
-            $table->string('lecturers_name');
-            $table->string('lecturers_surname');
-            $table->string('lecturers_email');
-            $table->string('lecturers_profile_image');
+            $table->string('name');
+            $table->string('surname');
+            $table->string('email');
+            $table->string('profile_image');
             $table->timestamps();
         });
     }
