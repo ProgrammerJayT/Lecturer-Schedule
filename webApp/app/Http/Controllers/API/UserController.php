@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lecturer;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -14,7 +16,24 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        //Show all users
+        $students = Student::all();
+        $lecturers = Lecturer::all();
+
+        //Get number of users in each table. If there are no users, return 0
+        $studentsCount = $students->count() ? $students->count() : 0;
+        $lecturersCount = $lecturers->count() ? $lecturers->count() : 0;
+
+        //Set return data
+        $data = [
+            'students' => $students,
+            'lecturers' => $lecturers,
+            'studentsCount' => $studentsCount,
+            'lecturersCount' => $lecturersCount
+        ];
+
+        //Return data
+        return response()->json($data);
     }
 
     /**
