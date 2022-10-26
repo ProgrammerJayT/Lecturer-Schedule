@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('email');
-            $table->string('profile_image');
+            $table->string('profile_image')->nullable();
             $table->timestamps();
         });
     }
