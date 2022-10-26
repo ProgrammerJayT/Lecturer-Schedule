@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Credentials;
 use App\Models\Lecturer;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -84,9 +86,29 @@ class UserController extends Controller
             //Check if model is set
             if ($createUserModel) {
 
+                $createUserCredentials = new Credentials();
+                $createUserCredentials->username = $request->username;
+                $createUserCredentials->password = Hash::make($request->password);
+                $createUserCredentials->role = $request->role;
+                $createUserCredentials->save();
+
                 $createUserModel->name = $request->name;
                 $createUserModel->surname = $request->surname;
                 $createUserModel->email = $request->email;
+                $createUserModel->credentials_id = $createUserCredentials->id;
+
+                $createUserModel->save();
+
+                return response()->json([
+                    'statusCode' => 201,
+                    'message' => 'User created successfully'
+                ]);
+
+            } else {
+                return response()->json([
+                    'statusCode' => 400,
+                    'message' => 'Invalid role'
+                ]);
             }
         }
     }
