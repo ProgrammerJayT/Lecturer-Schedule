@@ -21,11 +21,13 @@ class UserController extends Controller
         //Display all students and lecturers
         $students = Student::all();
         $lecturers = Lecturer::all();
+        $admins = Admin::all();
 
         //Return the students and lecturers
         return response()->json([
             'students' => $students,
-            'lecturers' => $lecturers
+            'lecturers' => $lecturers,
+            'admins' => $admins
         ]);
     }
 
