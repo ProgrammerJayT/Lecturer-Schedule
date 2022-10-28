@@ -17,6 +17,9 @@
 
     <link rel="stylesheet" href="assets/css/style.css">
 
+    @livewireStyles
+    @livewireScripts
+
     <!--[if lt IE 9]>
   <script src="assets/js/html5shiv.min.js"></script>
   <script src="assets/js/respond.min.js"></script>
