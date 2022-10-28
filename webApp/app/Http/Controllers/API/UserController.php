@@ -26,7 +26,7 @@ class UserController extends Controller
         $admins = Admin::all();
 
         //Return the students and lecturers
-        return response()->json([
+        return response([
             'students' => $students,
             'lecturers' => $lecturers,
             'admins' => $admins
@@ -49,7 +49,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public static function store(Request $request)
     {
         //
         $validator = Validator::make($request->all(), [
@@ -60,10 +60,11 @@ class UserController extends Controller
             'role' => 'required'
         ]);
 
+
         if ($validator->fails()) {
             return response([
                 'statusCode' => 400,
-                'message' => $validator->errors()
+                'errors' => $validator->errors()
             ]);
         } else {
 
@@ -87,13 +88,13 @@ class UserController extends Controller
             if ($createUserModel) {
 
                 $createUserCredentials = new Credentials();
-                $createUserCredentials->username = $request->username;
+                $createUserCredentials->username = $request->email;
                 $createUserCredentials->password = Hash::make($request->password);
                 $createUserCredentials->role = $request->role;
                 $createUserCredentials->save();
 
                 $createUserModel->name = $request->name;
-                $createUserModel->surname = $request->surname;
+                $createUserModel->surname = $request->email;
                 $createUserModel->email = $request->email;
                 $createUserModel->credentials_id = $createUserCredentials->id;
 
@@ -101,13 +102,14 @@ class UserController extends Controller
 
                 return response([
                     'statusCode' => 201,
-                    'message' => 'User created successfully'
+                    'message' => 'User created successfully',
+                    'user' => $createUserCredentials
                 ]);
 
             } else {
                 return response([
                     'statusCode' => 400,
-                    'message' => 'Invalid role'
+                    'message' => 'Something went wrong. Try again later.'
                 ]);
             }
         }

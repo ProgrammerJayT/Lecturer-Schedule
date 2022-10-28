@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -12,17 +13,25 @@ class RegisterController extends Controller
         return view('register.create');
     }
 
-    public function store(){
+    public function store()
+    {
 
-        $attributes = request()->validate([
+        request()->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:5|max:255',
+            'surname' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:students|unique:lecturers',
+            'password' => 'required|min:8|max:255',
+            'role' => 'required',
         ]);
 
-        $user = User::create($attributes);
-        auth()->login($user);
-        
-        return redirect('/dashboard');
-    } 
+        $createUserAttempt = UserController::store(request());
+
+        if ($createUserAttempt->getStatusCode() == 200) {
+            $user = $createUserAttempt->original['user'];
+            auth()->login($user);
+            return redirect('/login');
+        } else {
+            return redirect()->back()->withErrors($createUserAttempt->original['message']);
+        }
+    }
 }
