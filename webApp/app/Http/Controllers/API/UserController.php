@@ -99,13 +99,13 @@ class UserController extends Controller
 
                 $createUserModel->save();
 
-                return response()->json([
+                return response([
                     'statusCode' => 201,
                     'message' => 'User created successfully'
                 ]);
 
             } else {
-                return response()->json([
+                return response([
                     'statusCode' => 400,
                     'message' => 'Invalid role'
                 ]);
